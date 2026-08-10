@@ -1,0 +1,53 @@
+{
+  "name": "deepseek-web-search",
+  "version": "0.1.0",
+  "description": "通过 DeepSeek 原生联网搜索提供实时网页检索与带来源的答案",
+  "author": {
+    "name": "yingqing"
+  },
+  "license": "MIT",
+  "keywords": [
+    "deepseek",
+    "web-search",
+    "mcp"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "userConfig": {
+    "api_key": {
+      "type": "string",
+      "title": "DeepSeek API Token",
+      "description": "调用 DeepSeek 或兼容服务所需的 Bearer/API Key；也可通过 DEEPSEEK_API_KEY 环境变量提供",
+      "sensitive": true,
+      "required": true
+    },
+    "base_url": {
+      "type": "string",
+      "title": "API Base URL",
+      "description": "DeepSeek Anthropic-compatible API 根地址；代理服务也必须兼容 /v1/messages 和 web_search_20250305",
+      "default": "https://api.deepseek.com/anthropic",
+      "required": true
+    },
+    "model": {
+      "type": "string",
+      "title": "搜索模型",
+      "description": "用于搜索和答案合成的模型 ID",
+      "default": "deepseek-v4-flash",
+      "required": true
+    },
+    "thinking": {
+      "type": "string",
+      "title": "思考模式",
+      "description": "enabled 或 disabled",
+      "default": "enabled"
+    },
+    "max_tokens": {
+      "type": "number",
+      "title": "最大输出 Token",
+      "description": "单次搜索答案允许的最大输出 Token 数",
+      "default": 32768,
+      "min": 1024,
+      "max": 131072
+    }
+  }
+}

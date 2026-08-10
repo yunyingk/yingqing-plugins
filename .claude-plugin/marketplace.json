@@ -1,0 +1,24 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "yingqing-plugins",
+  "description": "Yingqing 的本地 AI 工具插件市场",
+  "owner": {
+    "name": "yingqing"
+  },
+  "plugins": [
+    {
+      "name": "deepseek-web-search",
+      "source": "./plugins/deepseek-web-search",
+      "description": "通过 DeepSeek 原生联网搜索为任意 MCP 客户端提供实时网页检索与带来源的答案",
+      "version": "0.1.0",
+      "category": "productivity",
+      "tags": [
+        "deepseek",
+        "search",
+        "mcp",
+        "web"
+      ],
+      "strict": true
+    }
+  ]
+}

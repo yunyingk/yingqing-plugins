@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "deepseek-web-search": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/scripts/start.mjs"
+      ],
+      "env": {
+        "DEEPSEEK_PLUGIN_API_KEY": "${user_config.api_key}",
+        "DEEPSEEK_PLUGIN_BASE_URL": "${user_config.base_url}",
+        "DEEPSEEK_PLUGIN_MODEL": "${user_config.model}",
+        "DEEPSEEK_PLUGIN_THINKING": "${user_config.thinking}",
+        "DEEPSEEK_PLUGIN_MAX_TOKENS": "${user_config.max_tokens}"
+      }
+    }
+  }
+}

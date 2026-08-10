@@ -1,0 +1,14 @@
+{
+  "name": "yingqing-plugins",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Yingqing 的本地 Claude Code/ZCode 插件市场",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "validate": "node scripts/validate.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
