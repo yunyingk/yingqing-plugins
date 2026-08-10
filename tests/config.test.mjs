@@ -1,9 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import {
-  resolveConfig,
-  toServerEnv,
-} from "../plugins/deepseek-web-search/scripts/config.mjs";
+import { resolveConfig } from "../plugins/deepseek-web-search/scripts/config.mjs";
 
 test("uses documented defaults", () => {
   const config = resolveConfig({ DEEPSEEK_API_KEY: "test-token" });
@@ -39,23 +36,6 @@ test("unresolved userConfig placeholders fall back to environment", () => {
 
   assert.equal(config.apiKey, "environment-token");
   assert.equal(config.baseUrl, "https://proxy.example/anthropic");
-});
-
-test("maps plugin configuration to the upstream MCP environment", () => {
-  const env = toServerEnv({
-    apiKey: "token",
-    baseUrl: "https://proxy.example/anthropic",
-    model: "deepseek-v4-flash",
-    thinking: "disabled",
-    maxTokens: "8192",
-  }, { PATH: "/bin" });
-
-  assert.equal(env.DEEPSEEK_API_KEY, "token");
-  assert.equal(env.WEBSEARCH_BASE_URL, "https://proxy.example/anthropic");
-  assert.equal(env.WEBSEARCH_MODEL, "deepseek-v4-flash");
-  assert.equal(env.WEBSEARCH_THINKING, "disabled");
-  assert.equal(env.WEBSEARCH_MAX_TOKENS, "8192");
-  assert.equal(env.PATH, "/bin");
 });
 
 test("rejects max_tokens outside the supported range", () => {

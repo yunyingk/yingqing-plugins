@@ -1,6 +1,6 @@
 # DeepSeek Web Search
 
-一个 Claude Code/ZCode 标准插件，通过 MCP 暴露 `web_search` 工具。搜索、网页读取和答案合成都由 DeepSeek 的服务端搜索工具完成。
+一个 Claude Code/ZCode 标准插件，通过内置的源码级 MCP Server 暴露 `web_search` 工具。搜索、网页读取和答案合成都由 DeepSeek 的服务端搜索工具完成。
 
 ## 配置
 
@@ -43,8 +43,8 @@ export WEBSEARCH_MAX_TOKENS="32768"
 {
   "mcpServers": {
     "deepseek-web-search": {
-      "command": "npx",
-      "args": ["--yes", "@kyaulabs/deepseek-websearch@1.0.4"],
+      "command": "node",
+      "args": ["/absolute/path/to/yingqing-plugins/plugins/deepseek-web-search/scripts/start.mjs"],
       "env": {
         "DEEPSEEK_API_KEY": "由使用者提供",
         "WEBSEARCH_BASE_URL": "https://api.deepseek.com/anthropic",
@@ -55,14 +55,13 @@ export WEBSEARCH_MAX_TOKENS="32768"
 }
 ```
 
-Token 不应提交进 Git。插件只负责把使用者提供的 Token 传给 MCP Server。
+Token 不应提交进 Git。MCP Server 直接从插件配置或环境变量读取 Token。
 
 ## 运行要求
 
 - Node.js 20 或更高版本
-- 可访问 npm（首次启动会下载固定版本的 MCP Server）
 - 可访问配置的 DeepSeek-compatible Base URL
 
-底层 MCP Server 固定为 `@kyaulabs/deepseek-websearch@1.0.4`，避免上游更新未经审查就自动进入插件。
+MCP Server 源码位于 `scripts/server/`，使用 Node.js 内置模块和原生 `fetch`，无需安装 npm 运行时依赖。工具只接受一个真正使用的 `query` 参数，并直接生成 DeepSeek 请求中的固定 system prompt 与 user message。
 
-该 MCP Server 由 [kyaulabs/deepseek-websearch-mcp](https://github.com/kyaulabs/deepseek-websearch-mcp) 提供并采用 MIT License。本插件负责标准化安装、用户配置、环境变量回退和跨客户端接入。
+搜索、格式化和错误处理逻辑改编自 [kyaulabs/deepseek-websearch-mcp](https://github.com/kyaulabs/deepseek-websearch-mcp)，原项目采用 MIT License；许可文本保存在 `THIRD_PARTY_LICENSES/KYAU-LABS-MIT.txt`。当前 MCP 协议层、工具定义、配置持久化及后续维护均由本仓库负责。

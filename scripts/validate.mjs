@@ -28,6 +28,9 @@ if (!mcp.mcpServers?.["deepseek-web-search"]) errors.push("MCP server declaratio
 const serialized = JSON.stringify({ marketplace, plugin, mcp });
 if (/sk-[A-Za-z0-9]/.test(serialized)) errors.push("A token-like value was committed to configuration");
 
+const startScript = await readFile(resolve(root, "plugins/deepseek-web-search/scripts/start.mjs"), "utf8");
+if (startScript.includes("@kyaulabs/deepseek-websearch")) errors.push("Runtime must not download the upstream MCP package");
+
 if (errors.length > 0) {
   for (const error of errors) console.error(`- ${error}`);
   process.exit(1);

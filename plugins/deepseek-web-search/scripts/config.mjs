@@ -46,14 +46,3 @@ export function resolveConfig(env = process.env) {
     )),
   };
 }
-
-export function toServerEnv(config, env = process.env) {
-  return {
-    ...env,
-    DEEPSEEK_API_KEY: config.apiKey,
-    WEBSEARCH_BASE_URL: config.baseUrl,
-    WEBSEARCH_MODEL: config.model,
-    WEBSEARCH_THINKING: config.thinking,
-    WEBSEARCH_MAX_TOKENS: config.maxTokens,
-  };
-}
