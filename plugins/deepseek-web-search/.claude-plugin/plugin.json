@@ -1,6 +1,6 @@
 {
   "name": "deepseek-web-search",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "通过 DeepSeek 官方 Anthropic Messages API 的原生联网搜索提供实时网页检索与带来源的答案",
   "author": {
     "name": "yingqing"
@@ -22,7 +22,7 @@
     },
     "base_url": {
       "type": "string",
-      "title": "API Base URL（自动追加 /v1/messages）",
+      "title": "API Base URL（需支持 Anthropic Messages；自动追加 /v1/messages）",
       "description": "DeepSeek 官方 Anthropic Messages API 根地址；插件会自动追加 /v1/messages。自建或代理服务必须完整支持 Anthropic Messages 请求格式和原生 Web Search 工具，仅支持 OpenAI-compatible /chat/completions 的服务不可用",
       "default": "https://api.deepseek.com/anthropic",
       "required": true

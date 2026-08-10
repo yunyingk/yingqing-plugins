@@ -1,6 +1,6 @@
 {
   "name": "yingqing-plugins",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "private": true,
   "type": "module",
   "description": "Yingqing 的本地 Claude Code/ZCode 插件市场",

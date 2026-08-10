@@ -10,7 +10,7 @@ import { searchWeb } from "./search.mjs";
 
 export const WEB_SEARCH_TOOL = Object.freeze({
   name: "web_search",
-  description: "Search the web with DeepSeek for current or externally verifiable information and return a synthesized answer with source URLs.",
+  description: "Search the web for current or externally verifiable information and return a synthesized answer with source URLs.",
   inputSchema: {
     type: "object",
     properties: {
@@ -53,7 +53,7 @@ export function createRequestHandler(config, options = {}) {
       return success(message.id, {
         protocolVersion: message.params?.protocolVersion ?? "2025-11-25",
         capabilities: { tools: {} },
-        serverInfo: { name: "yingqing-deepseek-web-search", version: "0.2.2" },
+        serverInfo: { name: "yingqing-deepseek-web-search", version: "0.2.3" },
       });
     }
 

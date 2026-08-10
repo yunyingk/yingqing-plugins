@@ -27,6 +27,7 @@ test("exposes a single query argument with standard annotations", async () => {
   const tool = response.result.tools[0];
 
   assert.equal(tool, WEB_SEARCH_TOOL);
+  assert.doesNotMatch(tool.description, /DeepSeek|Anthropic|Messages API/i);
   assert.deepEqual(Object.keys(tool.inputSchema.properties), ["query"]);
   assert.deepEqual(tool.inputSchema.required, ["query"]);
   assert.equal(tool.annotations.readOnlyHint, true);

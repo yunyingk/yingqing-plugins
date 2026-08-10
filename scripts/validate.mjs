@@ -39,8 +39,11 @@ const serialized = JSON.stringify({ marketplace, plugin, mcp });
 if (/sk-[A-Za-z0-9]/.test(serialized)) errors.push("A token-like value was committed to configuration");
 
 const startScript = await readFile(resolve(root, "plugins/deepseek-web-search/scripts/start.mjs"), "utf8");
+const skillSource = await readFile(resolve(root, "plugins/deepseek-web-search/skills/deepseek-web-search/SKILL.md"), "utf8");
 if (startScript.includes("@kyaulabs/deepseek-websearch")) errors.push("Runtime must not download the upstream MCP package");
 if (!startScript.includes("MINIMUM_NODE_MAJOR = 24")) errors.push("MCP entrypoint must enforce Node.js 24 or newer");
+const skillDescription = skillSource.match(/^description:\s*(.+)$/m)?.[1] ?? "";
+if (/DeepSeek|Anthropic|Messages API/i.test(skillDescription)) errors.push("Skill trigger description must remain provider-agnostic");
 
 if (errors.length > 0) {
   for (const error of errors) console.error(`- ${error}`);
