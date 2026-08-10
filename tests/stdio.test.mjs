@@ -44,6 +44,7 @@ test("serves the locally maintained MCP tool over stdio", async () => {
 
   assert.equal(exitCode, 0);
   assert.equal(responses[0].result.serverInfo.name, "yingqing-deepseek-web-search");
+  assert.equal(responses[0].result.serverInfo.version, "0.2.0");
   assert.deepEqual(
     Object.keys(responses[1].result.tools[0].inputSchema.properties),
     ["query"],

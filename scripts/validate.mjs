@@ -20,6 +20,7 @@ if (marketplace.name !== "yingqing-plugins") errors.push("Unexpected marketplace
 if (!entry) errors.push("Plugin is missing from marketplace.json");
 if (entry?.source !== "./plugins/deepseek-web-search") errors.push("Unexpected plugin source");
 if (entry?.version !== plugin.version) errors.push("Marketplace and plugin versions differ");
+if (packageJson.version !== plugin.version) errors.push("Repository and plugin versions differ");
 if (plugin.userConfig?.model?.default !== "deepseek-v4-flash") errors.push("Unexpected default model");
 if (plugin.userConfig?.base_url?.default !== "https://api.deepseek.com/anthropic") errors.push("Unexpected default base URL");
 if (plugin.userConfig?.api_key?.sensitive === true) errors.push("API token must remain editable in the ZCode plugin page");
