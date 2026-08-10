@@ -8,6 +8,7 @@ test("uses documented defaults", () => {
   assert.equal(config.apiKey, "test-token");
   assert.equal(config.baseUrl, "https://api.deepseek.com/anthropic");
   assert.equal(config.model, "deepseek-v4-flash");
+  assert.equal(config.webSearchVersion, "web_search_20250305");
   assert.equal(config.thinking, "enabled");
   assert.equal(config.maxTokens, "32768");
 });
@@ -19,11 +20,13 @@ test("plugin settings override environment fallbacks", () => {
     DEEPSEEK_PLUGIN_BASE_URL: "https://proxy.example/anthropic",
     WEBSEARCH_BASE_URL: "https://fallback.example/anthropic",
     DEEPSEEK_PLUGIN_MODEL: "custom-search-model",
+    DEEPSEEK_PLUGIN_WEB_SEARCH_VERSION: "web_search_20990101",
   });
 
   assert.equal(config.apiKey, "plugin-token");
   assert.equal(config.baseUrl, "https://proxy.example/anthropic");
   assert.equal(config.model, "custom-search-model");
+  assert.equal(config.webSearchVersion, "web_search_20990101");
 });
 
 test("unresolved userConfig placeholders fall back to environment", () => {
@@ -45,5 +48,15 @@ test("rejects max_tokens outside the supported range", () => {
       WEBSEARCH_MAX_TOKENS: "100",
     }),
     /between 1024 and 131072/,
+  );
+});
+
+test("rejects invalid web search tool versions", () => {
+  assert.throws(
+    () => resolveConfig({
+      DEEPSEEK_API_KEY: "token",
+      WEBSEARCH_VERSION: "computer_20250101",
+    }),
+    /must start with web_search_/,
   );
 });

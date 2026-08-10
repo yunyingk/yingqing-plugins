@@ -16,6 +16,7 @@ const config = {
   apiKey: "test-token",
   baseUrl: "https://proxy.example/anthropic/",
   model: "deepseek-v4-flash",
+  webSearchVersion: "web_search_20250305",
   thinking: "enabled",
   maxTokens: "32768",
 };
@@ -40,6 +41,7 @@ test("maps query directly to the DeepSeek user message", () => {
     { role: "user", content: "latest Node.js release" },
   ]);
   assert.equal(body.max_tokens, 32768);
+  assert.equal(body.tools[0].type, "web_search_20250305");
   assert.deepEqual(body.thinking, { type: "enabled" });
 });
 

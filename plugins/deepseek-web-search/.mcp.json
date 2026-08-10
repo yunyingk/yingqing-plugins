@@ -10,6 +10,7 @@
         "DEEPSEEK_PLUGIN_API_KEY": "${user_config.api_key}",
         "DEEPSEEK_PLUGIN_BASE_URL": "${user_config.base_url}",
         "DEEPSEEK_PLUGIN_MODEL": "${user_config.model}",
+        "DEEPSEEK_PLUGIN_WEB_SEARCH_VERSION": "${user_config.web_search_version}",
         "DEEPSEEK_PLUGIN_THINKING": "${user_config.thinking}",
         "DEEPSEEK_PLUGIN_MAX_TOKENS": "${user_config.max_tokens}"
       }

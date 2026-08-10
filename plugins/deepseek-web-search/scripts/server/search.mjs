@@ -19,7 +19,7 @@ export function buildSearchRequest(query, config) {
     max_tokens: Number(config.maxTokens),
     system: SYSTEM_PROMPT,
     messages: [{ role: "user", content: query }],
-    tools: [{ type: "web_search_20250305", name: "web_search" }],
+    tools: [{ type: config.webSearchVersion, name: "web_search" }],
     tool_choice: { type: "auto" },
   };
 

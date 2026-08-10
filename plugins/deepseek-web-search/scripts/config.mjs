@@ -21,6 +21,16 @@ function normalizeMaxTokens(value) {
   return String(parsed);
 }
 
+function normalizeWebSearchVersion(value) {
+  const resolved = firstUsable(value) ?? "web_search_20250305";
+
+  if (!/^web_search_[A-Za-z0-9_-]+$/.test(resolved)) {
+    throw new Error("web_search_version must start with web_search_ and contain only letters, numbers, underscores, or hyphens");
+  }
+
+  return resolved;
+}
+
 export function resolveConfig(env = process.env) {
   return {
     apiKey: firstUsable(
@@ -36,6 +46,10 @@ export function resolveConfig(env = process.env) {
       env.DEEPSEEK_PLUGIN_MODEL,
       env.WEBSEARCH_MODEL,
     ) ?? "deepseek-v4-flash",
+    webSearchVersion: normalizeWebSearchVersion(firstUsable(
+      env.DEEPSEEK_PLUGIN_WEB_SEARCH_VERSION,
+      env.WEBSEARCH_VERSION,
+    )),
     thinking: firstUsable(
       env.DEEPSEEK_PLUGIN_THINKING,
       env.WEBSEARCH_THINKING,

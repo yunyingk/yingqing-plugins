@@ -1,22 +1,25 @@
 # DeepSeek Web Search
 
-一个 Claude Code/ZCode 标准插件，通过内置的源码级 MCP Server 暴露 `web_search` 工具。搜索、网页读取和答案合成都由 DeepSeek 的服务端搜索工具完成。
+一个 Claude Code/ZCode 标准插件，通过内置的源码级 MCP Server 暴露 `web_search` 工具。插件调用 DeepSeek 官方 Anthropic Messages API 格式；搜索、网页读取和答案合成都由 DeepSeek 的原生服务端搜索工具完成。
 
 ## 配置
 
 | 配置 | 必填 | 默认值 | 说明 |
 | --- | --- | --- | --- |
 | `api_key` | 是 | 无 | 使用者自己的 DeepSeek 或兼容服务 Token；可在 ZCode 插件详情页填写并保存 |
-| `base_url` | 是 | `https://api.deepseek.com/anthropic` | Anthropic-compatible API 根地址 |
+| `base_url` | 是 | `https://api.deepseek.com/anthropic` | Anthropic Messages API 根地址；插件自动追加 `/v1/messages` |
 | `model` | 是 | `deepseek-v4-flash` | 搜索模型 ID |
+| `web_search_version` | 是 | `web_search_20250305` | 写入 `tools[].type` 的 DeepSeek 原生搜索工具版本 |
 | `thinking` | 否 | `enabled` | `enabled` 或 `disabled` |
 | `max_tokens` | 否 | `32768` | 最大输出 Token |
 
-代理 Base URL 必须实现：
+不要在 Base URL 末尾填写 `/v1/messages`，插件会自动追加。自建或代理服务必须完整实现：
 
 - `POST <base_url>/v1/messages`
 - Anthropic Messages 请求格式
-- DeepSeek 服务端工具 `web_search_20250305`
+- 配置的 DeepSeek 原生搜索工具版本，默认 `web_search_20250305`
+
+只有 OpenAI-compatible `/chat/completions`、不提供 Anthropic Messages API 或不支持 DeepSeek 原生 Web Search 的服务不能使用本插件。
 
 在 ZCode 中进入插件详情页，在“配置”区域填写 Token 后点击“保存配置”。配置由 ZCode 持久化，关闭窗口、退出应用或重启 Mac 后仍然有效。
 
@@ -31,6 +34,7 @@ export DEEPSEEK_API_KEY="你的-token"
 ```bash
 export WEBSEARCH_BASE_URL="https://api.deepseek.com/anthropic"
 export WEBSEARCH_MODEL="deepseek-v4-flash"
+export WEBSEARCH_VERSION="web_search_20250305"
 export WEBSEARCH_THINKING="enabled"
 export WEBSEARCH_MAX_TOKENS="32768"
 ```
@@ -48,7 +52,8 @@ export WEBSEARCH_MAX_TOKENS="32768"
       "env": {
         "DEEPSEEK_API_KEY": "由使用者提供",
         "WEBSEARCH_BASE_URL": "https://api.deepseek.com/anthropic",
-        "WEBSEARCH_MODEL": "deepseek-v4-flash"
+        "WEBSEARCH_MODEL": "deepseek-v4-flash",
+        "WEBSEARCH_VERSION": "web_search_20250305"
       }
     }
   }
@@ -60,7 +65,7 @@ Token 不应提交进 Git。MCP Server 直接从插件配置或环境变量读�
 ## 运行要求
 
 - Node.js 24 或更高版本
-- 可访问配置的 DeepSeek-compatible Base URL
+- 可访问 DeepSeek 官方 Anthropic Messages API，或完整兼容 `/v1/messages` 与原生 Web Search 的代理服务
 
 MCP Server 源码位于 `scripts/server/`，使用 Node.js 内置模块和原生 `fetch`，无需安装 npm 运行时依赖。工具只接受一个真正使用的 `query` 参数，并直接生成 DeepSeek 请求中的固定 system prompt 与 user message。
 

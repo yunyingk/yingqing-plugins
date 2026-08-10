@@ -53,7 +53,7 @@ export function createRequestHandler(config, options = {}) {
       return success(message.id, {
         protocolVersion: message.params?.protocolVersion ?? "2025-11-25",
         capabilities: { tools: {} },
-        serverInfo: { name: "yingqing-deepseek-web-search", version: "0.2.1" },
+        serverInfo: { name: "yingqing-deepseek-web-search", version: "0.2.2" },
       });
     }
 

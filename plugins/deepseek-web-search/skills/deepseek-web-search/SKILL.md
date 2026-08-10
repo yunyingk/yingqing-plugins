@@ -1,6 +1,6 @@
 ---
 name: deepseek-web-search
-description: Use when a request needs current web information, source-backed research, fact checking, release notes, prices, schedules, or other knowledge that may have changed recently. Uses DeepSeek server-side web search.
+description: Use when a request needs current web information, source-backed research, fact checking, release notes, prices, schedules, or other knowledge that may have changed recently. Uses DeepSeek native server-side web search through its Anthropic Messages API.
 ---
 
 # DeepSeek Web Search
