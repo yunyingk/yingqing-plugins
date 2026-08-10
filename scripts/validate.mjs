@@ -21,6 +21,12 @@ if (!entry) errors.push("Plugin is missing from marketplace.json");
 if (entry?.source !== "./plugins/deepseek-web-search") errors.push("Unexpected plugin source");
 if (entry?.version !== plugin.version) errors.push("Marketplace and plugin versions differ");
 if (packageJson.version !== plugin.version) errors.push("Repository and plugin versions differ");
+if (!entry?.icon?.startsWith("data:image/png;base64,")) errors.push("Marketplace icon must be an embedded PNG data URI");
+
+const iconAsset = await readFile(resolve(root, "plugins/deepseek-web-search/assets/icon.png"));
+const embeddedIcon = Buffer.from(entry?.icon?.split(",", 2)[1] ?? "", "base64");
+if (iconAsset.subarray(1, 4).toString("ascii") !== "PNG") errors.push("Plugin icon asset must be a PNG");
+if (embeddedIcon.subarray(1, 4).toString("ascii") !== "PNG") errors.push("Embedded marketplace icon must decode to a PNG");
 if (plugin.userConfig?.model?.default !== "deepseek-v4-flash") errors.push("Unexpected default model");
 if (plugin.userConfig?.base_url?.default !== "https://api.deepseek.com/anthropic") errors.push("Unexpected default base URL");
 if (plugin.userConfig?.api_key?.sensitive === true) errors.push("API token must remain editable in the ZCode plugin page");
