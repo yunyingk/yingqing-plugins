@@ -59,7 +59,7 @@ Token 不应提交进 Git。MCP Server 直接从插件配置或环境变量读�
 
 ## 运行要求
 
-- Node.js 20 或更高版本
+- Node.js 24 或更高版本
 - 可访问配置的 DeepSeek-compatible Base URL
 
 MCP Server 源码位于 `scripts/server/`，使用 Node.js 内置模块和原生 `fetch`，无需安装 npm 运行时依赖。工具只接受一个真正使用的 `query` 参数，并直接生成 DeepSeek 请求中的固定 system prompt 与 user message。

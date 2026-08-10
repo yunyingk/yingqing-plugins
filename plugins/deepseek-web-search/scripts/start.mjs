@@ -5,6 +5,16 @@ import process from "node:process";
 import { resolveConfig } from "./config.mjs";
 import { runStdioServer } from "./server/protocol.mjs";
 
+const MINIMUM_NODE_MAJOR = 24;
+const nodeMajor = Number.parseInt(process.versions.node, 10);
+
+if (!Number.isInteger(nodeMajor) || nodeMajor < MINIMUM_NODE_MAJOR) {
+  process.stderr.write(
+    `deepseek-web-search requires Node.js ${MINIMUM_NODE_MAJOR} or newer; current version is ${process.versions.node}.\n`,
+  );
+  process.exit(1);
+}
+
 let config;
 try {
   config = resolveConfig();
