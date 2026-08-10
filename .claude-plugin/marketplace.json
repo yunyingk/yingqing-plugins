@@ -34,6 +34,32 @@
         "mcp"
       ],
       "strict": true
+    },
+    {
+      "name": "xiaohongshu-skills",
+      "source": {
+        "source": "github",
+        "repo": "autoclaw-cc/xiaohongshu-skills",
+        "ref": "main",
+        "sha": "b043748282a57e347c52f517dfb59819121134ab"
+      },
+      "description": "使用已登录的 Chrome 完成小红书登录、搜索、发布、互动和内容运营",
+      "version": "1.0.0",
+      "author": {
+        "name": "autoclaw-cc"
+      },
+      "homepage": "https://github.com/autoclaw-cc/xiaohongshu-skills",
+      "repository": "https://github.com/autoclaw-cc/xiaohongshu-skills",
+      "license": "MIT",
+      "category": "productivity",
+      "tags": [
+        "xiaohongshu",
+        "rednote",
+        "browser-automation",
+        "skills"
+      ],
+      "skills": "./skills",
+      "strict": false
     }
   ]
 }

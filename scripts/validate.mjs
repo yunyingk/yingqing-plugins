@@ -18,14 +18,22 @@ const packageJson = await json("package.json");
 const errors = [];
 const searchEntry = marketplace.plugins?.find((item) => item.name === searchPlugin.name);
 const visionEntry = marketplace.plugins?.find((item) => item.name === visionPlugin.name);
+const xiaohongshuEntry = marketplace.plugins?.find((item) => item.name === "xiaohongshu-skills");
 
 if (marketplace.name !== "yingqing-plugins") errors.push("Unexpected marketplace name");
 if (!searchEntry) errors.push("Search plugin is missing from marketplace.json");
 if (!visionEntry) errors.push("Vision plugin is missing from marketplace.json");
+if (!xiaohongshuEntry) errors.push("Xiaohongshu plugin is missing from marketplace.json");
 if (searchEntry?.source !== "./plugins/deepseek-web-search") errors.push("Unexpected search plugin source");
 if (visionEntry?.source !== "./plugins/vision-analyzer") errors.push("Unexpected vision plugin source");
 if (searchEntry?.version !== searchPlugin.version) errors.push("Search marketplace and plugin versions differ");
 if (visionEntry?.version !== visionPlugin.version) errors.push("Vision marketplace and plugin versions differ");
+if (xiaohongshuEntry?.source?.source !== "github") errors.push("Xiaohongshu plugin must use an external GitHub source");
+if (xiaohongshuEntry?.source?.repo !== "autoclaw-cc/xiaohongshu-skills") errors.push("Unexpected Xiaohongshu plugin repository");
+if (!/^[0-9a-f]{40}$/.test(xiaohongshuEntry?.source?.sha ?? "")) errors.push("Xiaohongshu plugin source must be pinned to a full commit SHA");
+if (xiaohongshuEntry?.skills !== "./skills") errors.push("Xiaohongshu plugin must expose the upstream skills directory");
+if (xiaohongshuEntry?.strict !== false) errors.push("Xiaohongshu plugin must be defined by the marketplace entry");
+if (xiaohongshuEntry?.license !== "MIT") errors.push("Unexpected Xiaohongshu plugin license");
 if (!searchEntry?.icon?.startsWith("data:image/png;base64,")) errors.push("Marketplace icon must be an embedded PNG data URI");
 
 const iconAsset = await readFile(resolve(root, "plugins/deepseek-web-search/assets/icon.png"));
@@ -50,6 +58,7 @@ if (!visionMcp.mcpServers?.["vision-analyzer"]) errors.push("Vision MCP server d
 if (visionMcp.mcpServers?.["vision-analyzer"]?.timeoutMs !== 120000) errors.push("Vision MCP timeout must support long-running analysis");
 if (searchMcp.mcpServers?.["deepseek-web-search"]?.timeoutMs !== 120000) errors.push("Search MCP timeout must support long-running searches");
 if (packageJson.engines?.node !== ">=24") errors.push("Repository must require Node.js 24 or newer");
+if (packageJson.version !== "0.5.0") errors.push("Unexpected marketplace package version");
 
 const serialized = JSON.stringify({ marketplace, searchPlugin, searchMcp, visionPlugin, visionMcp });
 if (/sk-[A-Za-z0-9]/.test(serialized)) errors.push("A token-like value was committed to configuration");
@@ -79,4 +88,4 @@ if (errors.length > 0) {
   process.exit(1);
 }
 
-console.log("Marketplace and both plugin configurations are valid.");
+console.log("Marketplace and all plugin configurations are valid.");

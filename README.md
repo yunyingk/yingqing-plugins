@@ -1,39 +1,40 @@
 # yingqing-plugins
 
-面向 ZCode 的开源插件市场，当前提供 DeepSeek 原生联网搜索和 OpenAI-compatible 视觉理解两个独立插件。
+面向 ZCode 的开源插件市场，当前提供 DeepSeek 原生联网搜索、OpenAI-compatible 视觉理解，以及小红书自动化三个独立插件。
 
-仓库采用 `.claude-plugin/marketplace.json` 组织多个插件。每个插件都包含自己的清单、MCP Server、Skill、配置和版本，可以按需单独安装、升级或停用。
+仓库采用 `.claude-plugin/marketplace.json` 组织多个插件。搜索与视觉插件由本仓库维护源码；小红书插件直接索引经过筛选的外部开源项目，不复制或改写其实现。三个插件都可以按需单独安装、升级或停用。
 
 > 当前文档默认使用中文。其他语言版本将在后续完成翻译与审校后提供。
 
 ## 插件一览
 
-| 插件 | 版本 | MCP 工具 | 用途 | API 格式 |
+| 插件 | 版本 | 能力形式 | 用途 | 来源 |
 | --- | --- | --- | --- | --- |
-| [`deepseek-web-search`](./plugins/deepseek-web-search/) | `0.2.4` | `web_search` | 实时网页检索、事实核查、时效性信息和带来源回答 | DeepSeek Anthropic Messages API + 原生 Web Search |
-| [`vision-analyzer`](./plugins/vision-analyzer/) | `0.2.1` | `analyze_image` | 识别附件、本地图片、远程图片、截图、文档、表格和图表 | OpenAI-compatible Chat Completions 视觉格式 |
+| [`deepseek-web-search`](./plugins/deepseek-web-search/) | `0.2.4` | MCP：`web_search` | 实时网页检索、事实核查、时效性信息和带来源回答 | 本仓库维护 |
+| [`vision-analyzer`](./plugins/vision-analyzer/) | `0.2.1` | MCP：`analyze_image` | 识别附件、本地图片、远程图片、截图、文档、表格和图表 | 本仓库维护 |
+| [`xiaohongshu-skills`](https://github.com/autoclaw-cc/xiaohongshu-skills) | `1.0.0` | 5 个 Skills | 小红书登录、搜索、发布、互动和复合内容运营 | 外部 GitHub 仓库，固定提交索引 |
 
-两个插件完全独立：安装其中一个不会自动启用另一个，Token、Base URL 和模型配置也分别保存。
+三个插件完全独立：安装其中一个不会自动启用另外两个。两个模型插件的 Token、Base URL 和模型配置也分别保存。
 
 ## 主要特性
 
 - 标准插件市场结构，一个仓库管理多个独立插件。
-- MCP Server 源码随仓库发布，不在运行时下载第三方 MCP 包。
-- Node.js 原生 `fetch` 和零 npm 运行时依赖。
-- API 请求使用 SSE 流式响应，并正确处理服务端 keep-alive。
-- 长任务支持 MCP progress 心跳，服务器超时上限为 120 秒。
-- 支持并发 MCP 调用，不人为串行化搜索或图片识别请求。
+- 搜索和视觉 MCP Server 源码随仓库发布，不在运行时下载第三方 MCP 包。
+- 小红书插件使用 GitHub 外部源并固定到完整 commit SHA，来源与审计边界清晰。
+- 搜索与视觉插件使用 Node.js 原生 `fetch`，没有 npm 运行时依赖。
+- 两个模型插件的 API 请求使用 SSE 流式响应，并正确处理服务端 keep-alive。
+- 两个 MCP 的长任务支持 progress 心跳，服务器超时上限为 120 秒。
+- 两个 MCP 支持并发调用，不人为串行化搜索或图片识别请求。
 - 使用者自行提供 Token、服务地址和模型，凭据不会写入 Git。
 - Skill 触发描述保持能力导向，不把具体供应商实现污染到通用使用场景。
 
 ## 环境要求
 
-- ZCode 客户端
-- Node.js `24` 或更高版本
-- 对应服务的 API Token
-- 能访问所配置 API 地址的网络环境
+- ZCode 客户端。
+- 搜索和视觉插件：Node.js `24` 或更高版本、对应服务的 API Token，以及能访问所配置 API 地址的网络环境。
+- 小红书插件：Python `3.11` 或更高版本、[`uv`](https://docs.astral.sh/uv/)、Google Chrome，以及上游仓库提供的 XHS Bridge Chrome 扩展。
 
-两个 MCP Server 都会在启动时检查 Node.js 主版本。低于 Node.js 24 时会输出明确错误并停止启动。
+两个 MCP Server 都会在启动时检查 Node.js 主版本。低于 Node.js 24 时会输出明确错误并停止启动。小红书插件不使用这两个 MCP Server，也不受本仓库 Node.js 版本约束。
 
 ## 安装
 
@@ -42,8 +43,8 @@
 1. 打开 ZCode 的“设置 → 插件”。
 2. 点击“创建”或“添加插件市场”。
 3. 输入本仓库的 GitHub 仓库地址或 Git URL。
-4. 添加市场后，按需安装 `deepseek-web-search`、`vision-analyzer`，或者同时安装两个。
-5. 进入插件详情页填写配置，点击“保存配置”。
+4. 添加市场后，按需安装 `deepseek-web-search`、`vision-analyzer` 或 `xiaohongshu-skills`。
+5. 模型插件需要进入详情页填写配置并点击“保存配置”；小红书插件按下文完成 Python 依赖和 Chrome 扩展安装。
 
 ### 从本地目录安装
 
@@ -127,9 +128,32 @@ https://api.example.com/v1/chat/completions
 
 本地图片会读取后编码为 OpenAI-compatible `image_url` 内容块，再发送给配置的视觉服务。单张本地或 Base64 图片设有 20 MB 安全上限。
 
+## Xiaohongshu Skills
+
+`xiaohongshu-skills` 不是本仓库重新实现的小红书客户端，而是直接索引 [`autoclaw-cc/xiaohongshu-skills`](https://github.com/autoclaw-cc/xiaohongshu-skills)。插件当前固定到提交 [`b043748`](https://github.com/autoclaw-cc/xiaohongshu-skills/commit/b043748282a57e347c52f517dfb59819121134ab)，避免上游分支变化未经审查就进入已发布插件。
+
+安装后提供 5 个技能：
+
+- `xhs-auth`：检查登录状态、扫码或手机号登录、退出登录；
+- `xhs-explore`：搜索笔记、浏览首页、查看笔记详情和用户主页；
+- `xhs-publish`：发布图文、视频、长文和定时内容；
+- `xhs-interact`：评论、回复、点赞和收藏；
+- `xhs-content-ops`：竞品分析、热点追踪、内容创作和复合运营。
+
+### 首次使用
+
+上游实现通过本机 Chrome 和 XHS Bridge 扩展操作使用者自己的小红书登录态。安装插件后仍需按[上游安装说明](https://github.com/autoclaw-cc/xiaohongshu-skills#安装)完成：
+
+1. 安装 Python 3.11 和 `uv`；
+2. 在插件缓存目录执行 `uv sync`，安装上游 Python 依赖；
+3. 在 Chrome 的扩展管理页开启开发者模式，加载插件目录中的 `extension/`；
+4. 先执行登录状态检查，再进行搜索、发布或互动操作。
+
+自动发布、评论、点赞和收藏都可能触发平台风控。建议使用测试账号、控制操作频率，并在发布与评论前人工确认内容。上游代码、依赖和行为由其维护者负责；升级索引前应重新审查变更。
+
 ## 长任务、流式响应与超时
 
-两个插件的外部 API 请求都使用 SSE 流式响应。MCP 调用方提供 `progressToken` 时，Server 每 5 秒发送一次 `notifications/progress` 心跳。
+搜索与视觉插件的外部 API 请求都使用 SSE 流式响应。MCP 调用方提供 `progressToken` 时，Server 每 5 秒发送一次 `notifications/progress` 心跳。
 
 插件同时声明：
 
@@ -148,6 +172,7 @@ https://api.example.com/v1/chat/completions
 - 图片内容会发送到所配置的视觉服务；使用本地图片路径不代表图片只在本地处理。
 - 仓库自身不包含遥测、账号系统或用量上报服务。
 - 视觉用量元数据默认不进入上层 Agent 上下文；需要调试时可以手动开启。
+- 小红书插件会使用本机 Chrome 登录态并对平台执行真实操作；账号数据与自动化风险请按上游说明自行评估。
 - MCP 可以读取文件和访问网络。安装公开插件前，建议检查 `.mcp.json`、启动脚本和源码。
 - 如果 Token 曾出现在截图、聊天记录或公开日志中，请立即轮换。
 
@@ -172,6 +197,8 @@ yingqing-plugins/
 │       ├── scripts/
 │       ├── README.md
 │       └── UPSTREAM.md
+├── 外部索引（不复制到本仓库）
+│   └── autoclaw-cc/xiaohongshu-skills@b043748
 ├── scripts/
 │   └── validate.mjs
 ├── tests/
@@ -192,7 +219,7 @@ npm run validate
 - `npm run validate`：检查市场清单、插件版本、默认配置、超时与安全约束；
 - `git diff --check`：检查空白符和补丁格式问题。
 
-两个插件独立版本化。修改插件行为时，需要同步更新插件清单和市场条目的版本。
+两个本地插件独立版本化。修改其行为时，需要同步更新插件清单和市场条目的版本。外部插件升级时，需要更新固定 commit SHA、市场版本和审查说明。
 
 ## 开源来源
 
@@ -202,6 +229,10 @@ npm run validate
 - `vision-analyzer`：[`winton979/vision-mcp`](https://github.com/winton979/vision-mcp)
 
 完整来源说明和第三方许可文本分别保存在各插件的 `UPSTREAM.md` 与 `THIRD_PARTY_LICENSES/` 目录。
+
+小红书插件不包含在本仓库源码中，仅通过市场清单索引：
+
+- `xiaohongshu-skills`：[`autoclaw-cc/xiaohongshu-skills`](https://github.com/autoclaw-cc/xiaohongshu-skills)，MIT License。
 
 ## 贡献
 
@@ -214,4 +245,4 @@ npm run validate
 
 ## 许可证
 
-本仓库使用 [MIT License](./LICENSE)。第三方改编部分同时遵循其原始 MIT 许可和署名要求。
+本仓库使用 [MIT License](./LICENSE)。第三方改编部分同时遵循其原始 MIT 许可和署名要求。外部索引插件继续适用其自身许可证，本仓库不重新分发或再许可其源码。
