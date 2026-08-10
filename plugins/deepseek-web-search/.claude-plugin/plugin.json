@@ -1,6 +1,6 @@
 {
   "name": "deepseek-web-search",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "通过 DeepSeek 原生联网搜索提供实时网页检索与带来源的答案",
   "author": {
     "name": "yingqing"
@@ -17,8 +17,7 @@
     "api_key": {
       "type": "string",
       "title": "DeepSeek API Token",
-      "description": "调用 DeepSeek 或兼容服务所需的 Bearer/API Key；也可通过 DEEPSEEK_API_KEY 环境变量提供",
-      "sensitive": true,
+      "description": "调用 DeepSeek 或兼容服务所需的 Bearer/API Key；填写后由 ZCode 插件配置持久化保存",
       "required": true
     },
     "base_url": {

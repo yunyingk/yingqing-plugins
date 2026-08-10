@@ -6,7 +6,7 @@
 
 | 配置 | 必填 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| `api_key` | 是 | 无 | 使用者自己的 DeepSeek 或兼容服务 Token |
+| `api_key` | 是 | 无 | 使用者自己的 DeepSeek 或兼容服务 Token；可在 ZCode 插件详情页填写并保存 |
 | `base_url` | 是 | `https://api.deepseek.com/anthropic` | Anthropic-compatible API 根地址 |
 | `model` | 是 | `deepseek-v4-flash` | 搜索模型 ID |
 | `thinking` | 否 | `enabled` | `enabled` 或 `disabled` |
@@ -18,7 +18,9 @@
 - Anthropic Messages 请求格式
 - DeepSeek 服务端工具 `web_search_20250305`
 
-如果宿主暂不支持安全保存 `sensitive` 用户配置，可以在启动宿主前设置：
+在 ZCode 中进入插件详情页，在“配置”区域填写 Token 后点击“保存配置”。配置由 ZCode 持久化，关闭窗口、退出应用或重启 Mac 后仍然有效。
+
+对于没有插件配置界面的 MCP 宿主，也可以在启动宿主前设置：
 
 ```bash
 export DEEPSEEK_API_KEY="你的-token"

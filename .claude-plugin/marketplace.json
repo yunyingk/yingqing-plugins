@@ -10,7 +10,7 @@
       "name": "deepseek-web-search",
       "source": "./plugins/deepseek-web-search",
       "description": "通过 DeepSeek 原生联网搜索为任意 MCP 客户端提供实时网页检索与带来源的答案",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "category": "productivity",
       "tags": [
         "deepseek",

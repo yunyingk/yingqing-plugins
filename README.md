@@ -14,9 +14,7 @@
 /Users/yingqing/code/yingqing-plugins
 ```
 
-然后安装 `deepseek-web-search`，填写自己的 Token、Base URL 和模型。
-
-如果当前 ZCode 版本暂不支持在界面保存敏感配置，请先在启动 ZCode 的环境中设置 `DEEPSEEK_API_KEY`。
+然后安装 `deepseek-web-search`，在插件详情页填写自己的 Token、Base URL 和模型，并点击“保存配置”。这些配置由 ZCode 持久化，关闭窗口、退出应用或重启 Mac 后仍然有效。
 
 ## 本地检查
 

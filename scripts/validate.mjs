@@ -21,7 +21,8 @@ if (entry?.source !== "./plugins/deepseek-web-search") errors.push("Unexpected p
 if (entry?.version !== plugin.version) errors.push("Marketplace and plugin versions differ");
 if (plugin.userConfig?.model?.default !== "deepseek-v4-flash") errors.push("Unexpected default model");
 if (plugin.userConfig?.base_url?.default !== "https://api.deepseek.com/anthropic") errors.push("Unexpected default base URL");
-if (plugin.userConfig?.api_key?.sensitive !== true) errors.push("API token must be marked sensitive");
+if (plugin.userConfig?.api_key?.sensitive === true) errors.push("API token must remain editable in the ZCode plugin page");
+if (plugin.userConfig?.api_key?.required !== true) errors.push("API token must remain required");
 if (!mcp.mcpServers?.["deepseek-web-search"]) errors.push("MCP server declaration is missing");
 
 const serialized = JSON.stringify({ marketplace, plugin, mcp });
