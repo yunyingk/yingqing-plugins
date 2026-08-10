@@ -2,6 +2,7 @@
 
 import { spawn } from "node:child_process";
 import process from "node:process";
+import { annotateToolsListLine } from "./annotations.mjs";
 import { resolveConfig, toServerEnv } from "./config.mjs";
 
 const PACKAGE = "@kyaulabs/deepseek-websearch@1.0.4";
@@ -24,7 +25,27 @@ if (!config.apiKey) {
 
 const child = spawn("npx", ["--yes", PACKAGE], {
   env: toServerEnv(config),
-  stdio: "inherit",
+  stdio: ["pipe", "pipe", "inherit"],
+});
+
+process.stdin.pipe(child.stdin);
+
+let stdoutBuffer = "";
+child.stdout.setEncoding("utf8");
+child.stdout.on("data", (chunk) => {
+  stdoutBuffer += chunk;
+
+  let newlineIndex = stdoutBuffer.indexOf("\n");
+  while (newlineIndex !== -1) {
+    const line = stdoutBuffer.slice(0, newlineIndex);
+    stdoutBuffer = stdoutBuffer.slice(newlineIndex + 1);
+    process.stdout.write(`${annotateToolsListLine(line)}\n`);
+    newlineIndex = stdoutBuffer.indexOf("\n");
+  }
+});
+
+child.stdout.on("end", () => {
+  if (stdoutBuffer) process.stdout.write(annotateToolsListLine(stdoutBuffer));
 });
 
 child.on("error", (error) => {
