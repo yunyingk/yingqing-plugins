@@ -39,13 +39,15 @@ if (searchPlugin.userConfig?.api_key?.sensitive === true) errors.push("Search AP
 if (searchPlugin.userConfig?.api_key?.required !== true) errors.push("Search API token must remain required");
 if (!searchMcp.mcpServers?.["deepseek-web-search"]) errors.push("Search MCP server declaration is missing");
 
-if (visionPlugin.version !== "0.1.0") errors.push("Unexpected initial vision plugin version");
+if (visionPlugin.version !== "0.2.0") errors.push("Unexpected vision plugin version");
 if (visionPlugin.userConfig?.base_url?.default !== "https://api.openai.com") errors.push("Unexpected default vision base URL");
 if (!visionPlugin.userConfig?.base_url?.title?.includes("/v1/chat/completions")) errors.push("Vision Base URL field must disclose the appended endpoint");
 if (visionPlugin.userConfig?.model?.default !== "gpt-4o") errors.push("Unexpected default vision model");
 if (visionPlugin.userConfig?.api_key?.sensitive === true) errors.push("Vision API token must remain editable in the ZCode plugin page");
 if (visionPlugin.userConfig?.api_key?.required !== true) errors.push("Vision API token must remain required");
 if (!visionMcp.mcpServers?.["vision-analyzer"]) errors.push("Vision MCP server declaration is missing");
+if (visionMcp.mcpServers?.["vision-analyzer"]?.timeoutMs !== 120000) errors.push("Vision MCP timeout must support long-running analysis");
+if (searchMcp.mcpServers?.["deepseek-web-search"]?.timeoutMs !== 120000) errors.push("Search MCP timeout must support long-running searches");
 if (packageJson.engines?.node !== ">=24") errors.push("Repository must require Node.js 24 or newer");
 
 const serialized = JSON.stringify({ marketplace, searchPlugin, searchMcp, visionPlugin, visionMcp });
@@ -55,12 +57,19 @@ const startScript = await readFile(resolve(root, "plugins/deepseek-web-search/sc
 const skillSource = await readFile(resolve(root, "plugins/deepseek-web-search/skills/deepseek-web-search/SKILL.md"), "utf8");
 const visionStartScript = await readFile(resolve(root, "plugins/vision-analyzer/scripts/start.mjs"), "utf8");
 const visionSkillSource = await readFile(resolve(root, "plugins/vision-analyzer/skills/vision-analyzer/SKILL.md"), "utf8");
+const searchSource = await readFile(resolve(root, "plugins/deepseek-web-search/scripts/server/search.mjs"), "utf8");
+const searchProtocol = await readFile(resolve(root, "plugins/deepseek-web-search/scripts/server/protocol.mjs"), "utf8");
+const visionSource = await readFile(resolve(root, "plugins/vision-analyzer/scripts/server/vision.mjs"), "utf8");
+const visionProtocol = await readFile(resolve(root, "plugins/vision-analyzer/scripts/server/protocol.mjs"), "utf8");
 if (startScript.includes("@kyaulabs/deepseek-websearch")) errors.push("Runtime must not download the upstream MCP package");
 if (!startScript.includes("MINIMUM_NODE_MAJOR = 24")) errors.push("MCP entrypoint must enforce Node.js 24 or newer");
 const skillDescription = skillSource.match(/^description:\s*(.+)$/m)?.[1] ?? "";
 if (/DeepSeek|Anthropic|Messages API/i.test(skillDescription)) errors.push("Skill trigger description must remain provider-agnostic");
-if (!visionStartScript.includes("@winton979/vision-mcp@0.2.0")) errors.push("Vision upstream package must remain pinned");
 if (!visionStartScript.includes("MINIMUM_NODE_MAJOR = 24")) errors.push("Vision entrypoint must enforce Node.js 24 or newer");
+if (visionStartScript.includes("npx") || visionStartScript.includes("@winton979/vision-mcp")) errors.push("Vision runtime must use locally maintained source");
+if (!searchSource.includes("stream: true")) errors.push("Search API request must use SSE streaming");
+if (!visionSource.includes("stream: true")) errors.push("Vision API request must use SSE streaming");
+if (!searchProtocol.includes("notifications/progress") || !visionProtocol.includes("notifications/progress")) errors.push("Both MCP tools must support progress heartbeats");
 const visionSkillDescription = visionSkillSource.match(/^description:\s*(.+)$/m)?.[1] ?? "";
 if (/OpenAI|Chat Completions|winton979/i.test(visionSkillDescription)) errors.push("Vision skill trigger description must remain provider-agnostic");
 

@@ -24,11 +24,13 @@
 
 对于 ZCode 中的图片附件，技能会优先把宿主提供的本地附件路径传给 MCP。MCP 不会自动读取整段聊天附件；宿主必须向 Agent 暴露文件路径、URL 或图片内容。
 
-## 当前运行时
+## 当前实现
 
-当前版本固定使用 [`@winton979/vision-mcp@0.2.0`](https://github.com/winton979/vision-mcp) 作为底层 MCP Server。插件启动器负责配置映射和 URL 归一化；上游版本不会自动漂移。验证稳定后，可以把其 MIT 源码内置到本插件继续维护。
+当前 MCP Server 源码已经内置在本插件中，由本仓库直接维护，不再运行或下载 `@winton979/vision-mcp`。图片输入、OpenAI-compatible SSE 解析、错误处理、取消和 MCP 协议均使用 Node.js 内置模块实现，没有 npm 运行时依赖。
 
-首次启动需要联网通过 `npx` 下载固定版本。后续通常使用本机 npm 缓存。
+视觉请求始终使用流式输出。MCP Server 会在调用方提供 `progressToken` 时每 5 秒发送进度心跳，插件同时把 ZCode MCP 超时声明为 120 秒，以兼容不按进度重置计时器的宿主。
+
+实现最初改编自 [`winton979/vision-mcp`](https://github.com/winton979/vision-mcp) 的 MIT 源码；许可和来源记录仍保留，后续代码与版本由本仓库维护。
 
 ## 运行要求
 

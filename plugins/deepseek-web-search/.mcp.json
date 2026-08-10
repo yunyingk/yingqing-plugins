@@ -2,6 +2,7 @@
   "mcpServers": {
     "deepseek-web-search": {
       "type": "stdio",
+      "timeoutMs": 120000,
       "command": "node",
       "args": [
         "${CLAUDE_PLUGIN_ROOT}/scripts/start.mjs"

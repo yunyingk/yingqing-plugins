@@ -42,6 +42,7 @@ test("maps query directly to the DeepSeek user message", () => {
     { role: "user", content: "latest Node.js release" },
   ]);
   assert.equal(body.max_tokens, 32768);
+  assert.equal(body.stream, true);
   assert.equal(body.tools[0].type, "web_search_20250305");
   assert.deepEqual(body.thinking, { type: "enabled" });
 });
@@ -50,27 +51,28 @@ test("calls the configured endpoint and parses text with sources", async () => {
   let request;
   const fetchImpl = async (url, options) => {
     request = { url, options };
-    return {
-      ok: true,
-      async json() {
-        return {
-          content: [
-            { type: "text", text: "Current answer" },
-            {
-              type: "web_search_tool_result",
-              content: [
-                {
-                  type: "web_search_result",
-                  title: "Source",
-                  url: "https://example.com/source",
-                  page_age: "today",
-                },
-              ],
-            },
-          ],
-        };
+    const events = [
+      { type: "content_block_start", index: 0, content_block: { type: "text", text: "" } },
+      { type: "content_block_delta", index: 0, delta: { type: "text_delta", text: "Current answer" } },
+      {
+        type: "content_block_start",
+        index: 1,
+        content_block: {
+          type: "web_search_tool_result",
+          content: [{
+            type: "web_search_result",
+            title: "Source",
+            url: "https://example.com/source",
+            page_age: "today",
+          }],
+        },
       },
-    };
+      { type: "message_stop" },
+    ];
+    return new Response(`: keep-alive\n\n${events.map((event) => `data: ${JSON.stringify(event)}\n\n`).join("")}`, {
+      status: 200,
+      headers: { "content-type": "text/event-stream" },
+    });
   };
 
   const response = await searchWeb("current topic", config, { fetchImpl });
@@ -86,6 +88,28 @@ test("calls the configured endpoint and parses text with sources", async () => {
       pageAge: "today",
     }],
   });
+});
+
+test("emits MCP progress heartbeats when the caller supplies a progress token", async () => {
+  const notifications = [];
+  const search = async () => ({ results: [], textAnswer: "done" });
+  const handle = createRequestHandler(config, {
+    search,
+    notify: (notification) => notifications.push(notification),
+  });
+  await handle({
+    jsonrpc: "2.0",
+    id: "progress",
+    method: "tools/call",
+    params: {
+      name: "web_search",
+      arguments: { query: "current topic" },
+      _meta: { progressToken: "token-1" },
+    },
+  });
+  assert.equal(notifications[0].method, "notifications/progress");
+  assert.equal(notifications[0].params.progressToken, "token-1");
+  assert.ok(notifications.at(-1).params.progress > notifications[0].params.progress);
 });
 
 test("accepts concurrent tool calls without serializing them", async () => {

@@ -1,6 +1,6 @@
 {
   "name": "deepseek-web-search",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "通过 DeepSeek 官方 Anthropic Messages API 的原生联网搜索提供实时网页检索与带来源的答案",
   "author": {
     "name": "yingqing"

@@ -53,7 +53,7 @@ export function createRequestHandler(config, options = {}) {
       return success(message.id, {
         protocolVersion: message.params?.protocolVersion ?? "2025-11-25",
         capabilities: { tools: {} },
-        serverInfo: { name: "yingqing-deepseek-web-search", version: "0.2.3" },
+        serverInfo: { name: "yingqing-deepseek-web-search", version: "0.2.4" },
       });
     }
 
@@ -77,9 +77,25 @@ export function createRequestHandler(config, options = {}) {
     }
 
     const controller = new AbortController();
+    const progressToken = message.params?._meta?.progressToken;
+    let progress = 0;
+    const reportProgress = (messageText) => {
+      if (progressToken === undefined) return;
+      options.notify?.({
+        jsonrpc: "2.0",
+        method: "notifications/progress",
+        params: { progressToken, progress: ++progress, message: messageText },
+      });
+    };
     activeRequests.set(message.id, controller);
+    reportProgress("Starting web search");
+    const heartbeat = setInterval(() => reportProgress("Web search is still working"), 5000);
     try {
-      const response = await search(query, config, { signal: controller.signal });
+      const response = await search(query, config, {
+        signal: controller.signal,
+        onStreamEvent: () => {},
+      });
+      reportProgress("Web search completed");
       return success(message.id, {
         content: [{ type: "text", text: formatResults(query, response) }],
       });
@@ -94,6 +110,7 @@ export function createRequestHandler(config, options = {}) {
         isError: true,
       });
     } finally {
+      clearInterval(heartbeat);
       activeRequests.delete(message.id);
     }
   }
@@ -107,7 +124,8 @@ export function createRequestHandler(config, options = {}) {
 }
 
 export function runStdioServer(config) {
-  const handle = createRequestHandler(config);
+  const write = (message) => process.stdout.write(`${JSON.stringify(message)}\n`);
+  const handle = createRequestHandler(config, { notify: write });
   const input = readline.createInterface({ input: process.stdin, crlfDelay: Infinity });
 
   input.on("line", (line) => {
@@ -117,12 +135,12 @@ export function runStdioServer(config) {
     try {
       message = JSON.parse(line);
     } catch {
-      process.stdout.write(`${JSON.stringify(failure(null, -32700, "Parse error"))}\n`);
+      write(failure(null, -32700, "Parse error"));
       return;
     }
 
     void handle(message).then((response) => {
-      if (response) process.stdout.write(`${JSON.stringify(response)}\n`);
+      if (response) write(response);
     });
   });
 

@@ -1,6 +1,7 @@
 // Adapted from kyaulabs/deepseek-websearch-mcp (MIT).
 
 import { SearchError, SearchErrorCode } from "./errors.mjs";
+import { consumeSse } from "./sse.mjs";
 
 export const SYSTEM_PROMPT = [
   "You are a web search assistant. Follow these rules strictly:",
@@ -16,6 +17,7 @@ export const SYSTEM_PROMPT = [
 export function buildSearchRequest(query, config) {
   const body = {
     model: config.model,
+    stream: true,
     max_tokens: Number(config.maxTokens),
     system: SYSTEM_PROMPT,
     messages: [{ role: "user", content: query }],
@@ -55,6 +57,33 @@ export function parseSearchResponse(data) {
   }
 
   return { results, textAnswer: textParts.join("\n\n") };
+}
+
+export async function parseSearchStream(response, options = {}) {
+  const content = [];
+  let usage = null;
+
+  await consumeSse(response, (event) => {
+    if (event.type === "error") {
+      throw new SearchError(SearchErrorCode.API_ERROR, event.error?.message || "DeepSeek stream error");
+    }
+    if (event.type === "message_start") usage = event.message?.usage ?? usage;
+    if (event.type === "message_delta") usage = { ...usage, ...event.usage };
+
+    if (event.type === "content_block_start") {
+      content[event.index] = structuredClone(event.content_block ?? {});
+    } else if (event.type === "content_block_delta") {
+      const block = content[event.index] ?? (content[event.index] = {});
+      const delta = event.delta ?? {};
+      if (typeof delta.text === "string") block.text = `${block.text ?? ""}${delta.text}`;
+      if (typeof delta.thinking === "string") block.thinking = `${block.thinking ?? ""}${delta.thinking}`;
+      if (typeof delta.partial_json === "string") block.partial_json = `${block.partial_json ?? ""}${delta.partial_json}`;
+      if (Array.isArray(delta.content)) block.content = [...(block.content ?? []), ...delta.content];
+    }
+    options.onStreamEvent?.(event);
+  });
+
+  return { content: content.filter(Boolean), usage };
 }
 
 export async function searchWeb(query, config, options = {}) {
@@ -100,5 +129,8 @@ export async function searchWeb(query, config, options = {}) {
     );
   }
 
-  return parseSearchResponse(await response.json());
+  if (!response.headers.get("content-type")?.includes("text/event-stream")) {
+    return parseSearchResponse(await response.json());
+  }
+  return parseSearchResponse(await parseSearchStream(response, options));
 }

@@ -1,9 +1,9 @@
 # Upstream
 
 - Project: `winton979/vision-mcp`
-- Package: `@winton979/vision-mcp@0.2.0`
+- Reference package: `@winton979/vision-mcp@0.2.0`
 - Source: https://github.com/winton979/vision-mcp
 - License: MIT
-- Integration: the plugin starts the pinned published package through `npx`; upstream source is not yet vendored
+- Integration: selected image handling, prompts, and tool-shape ideas were adapted under MIT; the runtime is now locally maintained source code
 
-The local launcher maps ZCode user configuration to the upstream environment variables and normalizes the configured service root to the `/v1` base expected by the upstream server. The upstream server then appends `/chat/completions`.
+The plugin no longer installs, imports, or starts the upstream npm package. Its local implementation adds OpenAI-compatible SSE streaming, MCP progress heartbeats, cancellation, explicit tool annotations, and a 120-second ZCode server timeout.

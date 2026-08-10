@@ -69,4 +69,6 @@ Token 不应提交进 Git。MCP Server 直接从插件配置或环境变量读�
 
 MCP Server 源码位于 `scripts/server/`，使用 Node.js 内置模块和原生 `fetch`，无需安装 npm 运行时依赖。工具只接受一个真正使用的 `query` 参数，并直接生成 DeepSeek 请求中的固定 system prompt 与 user message。
 
+搜索请求使用 Anthropic Messages SSE 流式输出，并正确忽略 DeepSeek 的 `: keep-alive` 心跳。MCP Server 会在调用方提供 `progressToken` 时每 5 秒发送进度通知；插件声明的 MCP 超时为 120 秒。
+
 搜索、格式化和错误处理逻辑改编自 [kyaulabs/deepseek-websearch-mcp](https://github.com/kyaulabs/deepseek-websearch-mcp)，原项目采用 MIT License；许可文本保存在 `THIRD_PARTY_LICENSES/KYAU-LABS-MIT.txt`。当前 MCP 协议层、工具定义、配置持久化及后续维护均由本仓库负责。
