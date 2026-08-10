@@ -10,7 +10,8 @@
       "env": {
         "VISION_PLUGIN_API_KEY": "${user_config.api_key}",
         "VISION_PLUGIN_BASE_URL": "${user_config.base_url}",
-        "VISION_PLUGIN_MODEL": "${user_config.model}"
+        "VISION_PLUGIN_MODEL": "${user_config.model}",
+        "VISION_PLUGIN_SHOW_USAGE": "${user_config.show_usage}"
       }
     }
   }

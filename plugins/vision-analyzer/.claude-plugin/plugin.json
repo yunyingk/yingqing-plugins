@@ -1,6 +1,6 @@
 {
   "name": "vision-analyzer",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "通过可配置的 OpenAI-compatible 视觉模型识别附件、本地图片和远程图片",
   "author": {
     "name": "yingqing"
@@ -34,6 +34,12 @@
       "description": "支持图片输入且兼容 OpenAI Chat Completions 格式的模型 ID",
       "default": "gpt-4o",
       "required": true
+    },
+    "show_usage": {
+      "type": "boolean",
+      "title": "在工具结果中显示模型与用量",
+      "description": "开启后把模型 ID 和 Token 用量附加到识别正文；默认关闭，避免调试信息进入上层 Agent 上下文",
+      "default": false
     }
   }
 }

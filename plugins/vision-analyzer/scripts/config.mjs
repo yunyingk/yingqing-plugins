@@ -12,3 +12,10 @@ export function normalizeVisionBaseUrl(value) {
   if (input.endsWith("/v1")) return input;
   return `${input}/v1`;
 }
+
+export function parseBoolean(value, fallback = false) {
+  const normalized = String(value ?? "").trim().toLowerCase();
+  if (normalized === "true" || normalized === "1" || normalized === "yes") return true;
+  if (normalized === "false" || normalized === "0" || normalized === "no") return false;
+  return fallback;
+}

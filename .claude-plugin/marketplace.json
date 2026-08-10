@@ -25,7 +25,7 @@
       "name": "vision-analyzer",
       "source": "./plugins/vision-analyzer",
       "description": "通过可配置的 OpenAI-compatible 视觉模型识别附件、本地图片和远程图片",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "category": "productivity",
       "tags": [
         "vision",

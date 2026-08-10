@@ -1,5 +1,5 @@
 import process from "node:process";
-import { normalizeVisionBaseUrl } from "./config.mjs";
+import { normalizeVisionBaseUrl, parseBoolean } from "./config.mjs";
 import { runStdioServer } from "./server/protocol.mjs";
 
 const MINIMUM_NODE_MAJOR = 24;
@@ -16,4 +16,5 @@ runStdioServer({
   apiKey: process.env.VISION_PLUGIN_API_KEY ?? "",
   baseUrl: normalizeVisionBaseUrl(process.env.VISION_PLUGIN_BASE_URL),
   model: process.env.VISION_PLUGIN_MODEL || "gpt-4o",
+  showUsage: parseBoolean(process.env.VISION_PLUGIN_SHOW_USAGE, false),
 });

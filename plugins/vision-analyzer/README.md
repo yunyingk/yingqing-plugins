@@ -9,6 +9,7 @@
 | `api_key` | 是 | 无 | 使用者自己的视觉模型服务 Token，可在 ZCode 插件详情页填写并保存 |
 | `base_url` | 是 | `https://api.openai.com` | OpenAI-compatible 服务根地址；插件自动追加 `/v1/chat/completions` |
 | `model` | 是 | `gpt-4o` | 支持图片输入的模型 ID |
+| `show_usage` | 否 | `false` | 是否把模型 ID 和 Token 用量附加到工具结果；默认关闭，避免调试信息进入上层 Agent 上下文 |
 
 不要在 Base URL 中重复填写 `/v1/chat/completions`。为了兼容已有配置，插件也接受以 `/v1` 或完整 `/v1/chat/completions` 结尾的地址，并会归一化后再启动 MCP。
 

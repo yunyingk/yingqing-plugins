@@ -8,6 +8,7 @@ const config = {
   apiKey: "test-token",
   baseUrl: "https://vision.example/v1",
   model: "test-vision",
+  showUsage: false,
 };
 
 test("builds a streaming OpenAI-compatible vision request", () => {
@@ -60,6 +61,25 @@ test("emits progress notifications for a long vision call", async () => {
     },
   });
   assert.equal(response.result.content[0].text, "done");
+  assert.equal(response.result.content.length, 1);
   assert.equal(notifications[0].params.progressToken, "vision-1");
   assert.ok(notifications.at(-1).params.progress > notifications[0].params.progress);
+});
+
+test("includes usage metadata only when explicitly configured", async () => {
+  const analyze = async () => ({
+    text: "done",
+    usage: { prompt_tokens: 10, completion_tokens: 2 },
+    model: "test-vision",
+    responseMode: "markdown",
+  });
+  const handle = createRequestHandler({ ...config, showUsage: true }, { analyze });
+  const response = await handle({
+    jsonrpc: "2.0",
+    id: 2,
+    method: "tools/call",
+    params: { name: "analyze_image", arguments: { path: "/tmp/example.png" } },
+  });
+  assert.equal(response.result.content.length, 2);
+  assert.match(response.result.content[1].text, /prompt_tokens/);
 });

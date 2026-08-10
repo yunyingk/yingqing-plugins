@@ -79,7 +79,9 @@ export function createRequestHandler(config, options = {}) {
       });
       reportProgress("Vision analysis completed");
       const content = [{ type: "text", text: result.text }];
-      if (result.responseMode !== "json") content.push({ type: "text", text: `\n---\n${JSON.stringify({ model: result.model, usage: result.usage })}` });
+      if (config.showUsage && result.responseMode !== "json") {
+        content.push({ type: "text", text: `\n---\n${JSON.stringify({ model: result.model, usage: result.usage })}` });
+      }
       return success(message.id, { content });
     } catch (error) {
       return success(message.id, {

@@ -39,10 +39,11 @@ if (searchPlugin.userConfig?.api_key?.sensitive === true) errors.push("Search AP
 if (searchPlugin.userConfig?.api_key?.required !== true) errors.push("Search API token must remain required");
 if (!searchMcp.mcpServers?.["deepseek-web-search"]) errors.push("Search MCP server declaration is missing");
 
-if (visionPlugin.version !== "0.2.0") errors.push("Unexpected vision plugin version");
+if (visionPlugin.version !== "0.2.1") errors.push("Unexpected vision plugin version");
 if (visionPlugin.userConfig?.base_url?.default !== "https://api.openai.com") errors.push("Unexpected default vision base URL");
 if (!visionPlugin.userConfig?.base_url?.title?.includes("/v1/chat/completions")) errors.push("Vision Base URL field must disclose the appended endpoint");
 if (visionPlugin.userConfig?.model?.default !== "gpt-4o") errors.push("Unexpected default vision model");
+if (visionPlugin.userConfig?.show_usage?.default !== false) errors.push("Vision usage metadata must be hidden by default");
 if (visionPlugin.userConfig?.api_key?.sensitive === true) errors.push("Vision API token must remain editable in the ZCode plugin page");
 if (visionPlugin.userConfig?.api_key?.required !== true) errors.push("Vision API token must remain required");
 if (!visionMcp.mcpServers?.["vision-analyzer"]) errors.push("Vision MCP server declaration is missing");
