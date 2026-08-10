@@ -20,6 +20,20 @@
         "web"
       ],
       "strict": true
+    },
+    {
+      "name": "vision-analyzer",
+      "source": "./plugins/vision-analyzer",
+      "description": "通过可配置的 OpenAI-compatible 视觉模型识别附件、本地图片和远程图片",
+      "version": "0.1.0",
+      "category": "productivity",
+      "tags": [
+        "vision",
+        "image",
+        "ocr",
+        "mcp"
+      ],
+      "strict": true
     }
   ]
 }

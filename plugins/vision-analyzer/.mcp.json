@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "vision-analyzer": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/scripts/start.mjs"
+      ],
+      "env": {
+        "VISION_PLUGIN_API_KEY": "${user_config.api_key}",
+        "VISION_PLUGIN_BASE_URL": "${user_config.base_url}",
+        "VISION_PLUGIN_MODEL": "${user_config.model}"
+      }
+    }
+  }
+}

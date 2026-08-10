@@ -1,0 +1,39 @@
+{
+  "name": "vision-analyzer",
+  "version": "0.1.0",
+  "description": "通过可配置的 OpenAI-compatible 视觉模型识别附件、本地图片和远程图片",
+  "author": {
+    "name": "yingqing"
+  },
+  "license": "MIT",
+  "keywords": [
+    "vision",
+    "image",
+    "ocr",
+    "mcp"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "userConfig": {
+    "api_key": {
+      "type": "string",
+      "title": "Vision API Token",
+      "description": "调用视觉模型服务所需的 Bearer/API Key；填写后由 ZCode 插件配置持久化保存",
+      "required": true
+    },
+    "base_url": {
+      "type": "string",
+      "title": "API Base URL（自动追加 /v1/chat/completions）",
+      "description": "OpenAI-compatible API 根地址。请填写服务根地址，不要包含 /v1/chat/completions；插件会自动补全该路径",
+      "default": "https://api.openai.com",
+      "required": true
+    },
+    "model": {
+      "type": "string",
+      "title": "视觉模型",
+      "description": "支持图片输入且兼容 OpenAI Chat Completions 格式的模型 ID",
+      "default": "gpt-4o",
+      "required": true
+    }
+  }
+}

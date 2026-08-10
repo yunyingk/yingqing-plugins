@@ -5,6 +5,7 @@
 ## 当前插件
 
 - `deepseek-web-search`：通过 DeepSeek 服务端联网搜索提供 MCP `web_search` 工具。
+- `vision-analyzer`：通过可配置的 OpenAI-compatible 视觉模型识别附件和图片。
 
 ## 添加到 ZCode
 
@@ -14,7 +15,7 @@
 /Users/yingqing/code/yingqing-plugins
 ```
 
-然后安装 `deepseek-web-search`，在插件详情页填写自己的 Token、Base URL 和模型，并点击“保存配置”。这些配置由 ZCode 持久化，关闭窗口、退出应用或重启 Mac 后仍然有效。
+然后按需安装 `deepseek-web-search` 或 `vision-analyzer`，在插件详情页填写自己的 Token、Base URL 和模型，并点击“保存配置”。两个插件彼此独立，配置也分别保存。配置由 ZCode 持久化，关闭窗口、退出应用或重启 Mac 后仍然有效。
 
 ## 本地检查
 
@@ -30,9 +31,14 @@ yingqing-plugins/
 ├── .claude-plugin/
 │   └── marketplace.json
 └── plugins/
-    └── deepseek-web-search/
+    ├── deepseek-web-search/
+    │   ├── .claude-plugin/plugin.json
+    │   ├── .mcp.json
+    │   ├── skills/deepseek-web-search/SKILL.md
+    │   └── scripts/
+    └── vision-analyzer/
         ├── .claude-plugin/plugin.json
         ├── .mcp.json
-        ├── skills/deepseek-web-search/SKILL.md
+        ├── skills/vision-analyzer/SKILL.md
         └── scripts/
 ```
