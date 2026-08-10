@@ -5,7 +5,14 @@ import process from "node:process";
 import { resolveConfig, toServerEnv } from "./config.mjs";
 
 const PACKAGE = "@kyaulabs/deepseek-websearch@1.0.4";
-const config = resolveConfig();
+let config;
+
+try {
+  config = resolveConfig();
+} catch (error) {
+  console.error(error instanceof Error ? error.message : String(error));
+  process.exit(1);
+}
 
 if (!config.apiKey) {
   console.error(

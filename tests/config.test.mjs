@@ -57,3 +57,13 @@ test("maps plugin configuration to the upstream MCP environment", () => {
   assert.equal(env.WEBSEARCH_MAX_TOKENS, "8192");
   assert.equal(env.PATH, "/bin");
 });
+
+test("rejects max_tokens outside the supported range", () => {
+  assert.throws(
+    () => resolveConfig({
+      DEEPSEEK_API_KEY: "token",
+      WEBSEARCH_MAX_TOKENS: "100",
+    }),
+    /between 1024 and 131072/,
+  );
+});

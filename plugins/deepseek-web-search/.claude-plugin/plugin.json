@@ -1,6 +1,6 @@
 {
   "name": "deepseek-web-search",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "通过 DeepSeek 原生联网搜索提供实时网页检索与带来源的答案",
   "author": {
     "name": "yingqing"
@@ -45,9 +45,7 @@
       "type": "number",
       "title": "最大输出 Token",
       "description": "单次搜索答案允许的最大输出 Token 数",
-      "default": 32768,
-      "min": 1024,
-      "max": 131072
+      "default": 32768
     }
   }
 }

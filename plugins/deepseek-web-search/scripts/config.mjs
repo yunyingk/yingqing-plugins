@@ -10,6 +10,17 @@ function firstUsable(...values) {
   return values.find(usable)?.trim();
 }
 
+function normalizeMaxTokens(value) {
+  const resolved = firstUsable(value) ?? "32768";
+  const parsed = Number(resolved);
+
+  if (!Number.isInteger(parsed) || parsed < 1024 || parsed > 131072) {
+    throw new Error("max_tokens must be an integer between 1024 and 131072");
+  }
+
+  return String(parsed);
+}
+
 export function resolveConfig(env = process.env) {
   return {
     apiKey: firstUsable(
@@ -29,10 +40,10 @@ export function resolveConfig(env = process.env) {
       env.DEEPSEEK_PLUGIN_THINKING,
       env.WEBSEARCH_THINKING,
     ) ?? "enabled",
-    maxTokens: firstUsable(
+    maxTokens: normalizeMaxTokens(firstUsable(
       env.DEEPSEEK_PLUGIN_MAX_TOKENS,
       env.WEBSEARCH_MAX_TOKENS,
-    ) ?? "32768",
+    )),
   };
 }
 
