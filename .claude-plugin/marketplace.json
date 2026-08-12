@@ -7,6 +7,33 @@
   },
   "plugins": [
     {
+      "name": "seal-home",
+      "source": {
+        "source": "github",
+        "repo": "yunyingk/seal-home",
+        "ref": "master",
+        "sha": "38610d3573a2ae792cba219411fe1f7c98909947"
+      },
+      "description": "Seal Home tenant operations: approval-run diagnosis, minimal rule remediation, delegation links, Hose/合思 authorization, users, rules, billing, and search.",
+      "version": "0.5.0",
+      "author": {
+        "name": "yingqing"
+      },
+      "homepage": "https://github.com/yunyingk/seal-home",
+      "repository": "https://github.com/yunyingk/seal-home",
+      "license": "MIT",
+      "category": "productivity",
+      "tags": [
+        "seal",
+        "seal-home",
+        "mcp",
+        "approval",
+        "skills"
+      ],
+      "skills": "./skills",
+      "strict": false
+    },
+    {
       "name": "deepseek-web-search",
       "source": "./plugins/deepseek-web-search",
       "description": "通过 DeepSeek 官方 Anthropic Messages API 的原生联网搜索提供实时网页检索与带来源的答案",
