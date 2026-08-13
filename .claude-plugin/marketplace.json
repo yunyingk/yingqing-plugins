@@ -12,10 +12,10 @@
         "source": "github",
         "repo": "yunyingk/seal-home",
         "ref": "master",
-        "sha": "883798b1571ebbdac725dd05c2f9ec64b4f765a2"
+        "sha": "8be627e1c6b14e469d85e9d4197c39fc4e8e6bff"
       },
       "description": "Seal Home tenant operations: approval-run diagnosis, minimal rule remediation, delegation links, Hose/合思 authorization, users, rules, billing, and search.",
-      "version": "0.5.0",
+      "version": "0.5.1",
       "author": {
         "name": "yingqing"
       },
